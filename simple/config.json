@@ -1,0 +1,20 @@
+{
+  "inbounds": [
+    {
+      "port": 10086, // 服务器监听端口
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "c28b8c44-ff5b-4249-a7f5-e18b58ecfe48" // 记得替换这个字段，使用 `xray uuid` 或 `uuidgen` 生成
+          }
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom"
+    }
+  ]
+}

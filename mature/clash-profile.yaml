@@ -1,0 +1,47 @@
+mixed-port: 7890
+mode: rule
+log-level: warning
+allow-lan: false
+external-controller: 127.0.0.1:9090
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://8.8.8.8/dns-query
+
+proxies:
+  - name: "VPS-Reality"
+    type: vless
+    server: your-server-ip-or-domain.com
+    port: 443
+    uuid: c28b8c44-ff5b-4249-a7f5-e18b58ecfe48
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.amazon.com
+    client-fingerprint: chrome
+    reality-opts:
+      public-key: Udi_r-4WCib55sIzS6J7BPW0uA6oNbMunNeNLfKPxVg
+      short-id: 49981081cb2f8043
+
+proxy-groups:
+  - name: "🚀 Proxy"
+    type: select
+    proxies:
+      - "VPS-Reality"
+      - "DIRECT"
+
+rules:
+  - GEOSITE,category-ads-all,REJECT
+  - GEOIP,private,DIRECT
+  - GEOSITE,cn,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 Proxy

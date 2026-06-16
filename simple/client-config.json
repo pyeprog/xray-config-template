@@ -1,0 +1,30 @@
+{
+  "inbounds": [
+    {
+      "port": 10808, // 本地监听端口（SOCKS代理）
+      "protocol": "socks",
+      "settings": {
+        "udp": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "your-server-ip", // 替换为服务器实际IP
+            "port": 10086, // 与服务端对应
+            "users": [
+              {
+                "id": "c28b8c44-ff5b-4249-a7f5-e18b58ecfe48", // 必须与服务端一致
+                "encryption": "none" // VLESS的standard encryption
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
