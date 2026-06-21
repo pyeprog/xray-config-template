@@ -1,27 +1,95 @@
 mixed-port: 7890
+allow-lan: false
+bind-address: "127.0.0.1"
 mode: rule
 log-level: warning
-allow-lan: false
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: "off"
 external-controller: 127.0.0.1:9090
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+ 
+geodata-mode: true
+geo-auto-update: true
+geo-update-interval: 24
+
+tun:
+  enable: false
+  stack: mixed                   # system / gvisor / mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+
+sniffer:
+  enable: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "+.push.apple.com"
+    - "+.wechat.com"
 
 dns:
   enable: true
   ipv6: false
+  listen: 127.0.0.1:1053
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  use-system-hosts: true
+ 
+  fake-ip-filter:
+    - "+.lan"
+    - "+.local"
+    - "localhost"
+    - "+.msftncsi.com"
+    - "+.msftconnecttest.com"
+    - "connectivitycheck.gstatic.com"
+    - "connectivitycheck.platform.hicloud.com"
+    - "captive.apple.com"
+    - "time.*.com"
+    - "ntp.*.com"
+    - "+.pool.ntp.org"
+    - "+.stun.playstation.net"
+    - "+.xboxlive.com"
+    - "+.srv.nintendo.net"
+ 
   default-nameserver:
-    - 1.1.1.1
-    - 8.8.8.8
+    - 223.5.5.5
+    - 119.29.29.29
+ 
+  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
+ 
   nameserver:
-    - https://1.1.1.1/dns-query
-    - https://8.8.8.8/dns-query
+    - "https://1.1.1.1/dns-query#🚀 Proxy"
+    - "https://8.8.8.8/dns-query#🚀 Proxy"
+ 
+  nameserver-policy:
+    "geosite:cn,private":
+      - https://223.5.5.5/dns-query
+      - https://doh.pub/dns-query
+    "geosite:geolocation-!cn":
+      - "https://1.1.1.1/dns-query#🚀 Proxy"
+      - "https://8.8.8.8/dns-query#🚀 Proxy"
 
 proxies:
   - name: "VPS-Reality"
     type: vless
-    server: your-server-ip-or-domain.com
+    server: 67.230.168.52
     port: 443
-    uuid: c28b8c44-ff5b-4249-a7f5-e18b58ecfe48
+    uuid: 0b366135-b582-4a9b-9424-a03efddfb2ac
     network: tcp
     tls: true
     udp: true
@@ -29,8 +97,8 @@ proxies:
     servername: www.amazon.com
     client-fingerprint: chrome
     reality-opts:
-      public-key: Udi_r-4WCib55sIzS6J7BPW0uA6oNbMunNeNLfKPxVg
-      short-id: 49981081cb2f8043
+      public-key: wVbd6ECxkSb5rGRznGLKdGKCPh9-x7H8mXxBPLMoRzU
+      short-id: 31129a56be94c271
 
 proxy-groups:
   - name: "🚀 Proxy"
@@ -41,7 +109,10 @@ proxy-groups:
 
 rules:
   - GEOSITE,category-ads-all,REJECT
-  - GEOIP,private,DIRECT
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
   - GEOSITE,cn,DIRECT
+  - GEOSITE,geolocation-!cn,🚀 Proxy
   - GEOIP,CN,DIRECT
   - MATCH,🚀 Proxy
+
